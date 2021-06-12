@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "CommonJS",
+    "strict": true,
+    "noImplicitAny": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "declaration": true,
+    // Type Declaration Directory: auto generated while Compiling `ts` into `js`
+    "declarationDir": "",
+    // output directory: contains COMPILED JS Code
+    "outDir": "dist"
+  },
+  "include": ["./src/**/*"]
+}

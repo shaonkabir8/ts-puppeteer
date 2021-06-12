@@ -1,0 +1,59 @@
+{
+  "extends": "tslint:recommended",
+  "rules": {
+    "max-line-length": {
+      "options": 400
+    },
+    "indent": [true, "spaces", 2],
+    "quotemark": [true, "single", "backtick"],
+    "no-var-requires": true,
+    "no-var-keyword": true,
+    "no-return-await": true,
+    "strict-type-predicates": false,
+    "triple-equals": [true, "allow-undefined-check", "allow-null-check"],
+    "switch-default": true,
+    "variable-name": [true, "ban-keywords", "check-format"],
+    "whitespace": true,
+    "typedef-whitespace": [
+      true,
+      {
+        "call-signature": "nospace",
+        "index-signature": "nospace",
+        "parameter": "nospace",
+        "property-declaration": "nospace",
+        "variable-declaration": "nospace"
+      },
+      {
+        "call-signature": "onespace",
+        "index-signature": "onespace",
+        "parameter": "onespace",
+        "property-declaration": "onespace",
+        "variable-declaration": "onespace"
+      }
+    ],
+    "trailing-comma": [
+      true,
+      {
+        "multiline": "always",
+        "singleline": "never"
+      }
+    ],
+    "semicolon": [true, "always"],
+    "no-unused-expression": true,
+    "new-parens": true,
+    "no-arg": true,
+    "no-bitwise": true,
+    "no-conditional-assignment": true,
+    "no-consecutive-blank-lines": false,
+    "no-console": {
+      "severity": "warning",
+      "options": ["debug", "info", "log", "time", "timeEnd", "trace"]
+    },
+    "ordered-imports": [false]
+  },
+  "jsRules": {
+    "max-line-length": {
+      "options": [400]
+    }
+  }
+}
