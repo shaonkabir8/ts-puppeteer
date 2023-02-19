@@ -5,7 +5,7 @@
   "author": "Shaon Kabir <shaonkabir8>",
   "homepage": "https://github.com/shaonkabir8/ts-puppeteer#readme",
   "license": "MIT",
-  "private": true,
+  "private": false,
   "dependencies": {
     "debug": "^4.3.1",
     "dotenv": "^8.2.0",
