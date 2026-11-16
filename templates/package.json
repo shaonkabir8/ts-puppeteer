@@ -1,0 +1,40 @@
+{
+  "name": "PROJECT_NAME",
+  "version": "1.0.0",
+  "description": "A Puppeteer + TypeScript + Jest automation project created with create-ts-puppeteer",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "ts-node src/index.ts",
+    "build": "tsc",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "dependencies": {
+    "debug": "^4.4.3",
+    "dotenv": "^18.0.0",
+    "puppeteer": "^25.17.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.28.0",
+    "@babel/plugin-transform-modules-commonjs": "^7.27.0",
+    "@eslint/js": "^9.39.0",
+    "@types/debug": "^4.1.13",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^22.20.5",
+    "babel-jest": "^30.5.0",
+    "eslint": "^9.39.0",
+    "eslint-config-prettier": "^10.1.8",
+    "jest": "^30.5.0",
+    "prettier": "^3.6.2",
+    "ts-jest": "^29.4.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.46.0"
+  }
+}

@@ -1,14 +1,22 @@
-/*
- * @fileOverview Jest-Puppeteer Configuration ⚒️ super effective to test our codes faster 🎉
- * @author 🧑‍💻 Shaon Kabir <shaonkabir8>
- * For a detailed explanation regarding each configuration property, visit:
- * @link https://jestjs.io/docs/en/configuration.html
- * @see https://github.com/maxmindlin/ts-puppeteer-env/blob/master/jest.config.js
+/**
+ * Jest configuration for the TypeScript + Puppeteer test suite.
+ * @link https://jestjs.io/docs/configuration
+ * @type {import('jest').Config}
  */
-
 module.exports = {
-    // Automatically clear mock calls and instances between every test
-    clearMocks: true,
-    // The directory where Jest should output its coverage files
-    coverageDirectory: "coverage",
-}
+  preset: 'ts-jest',
+  testEnvironment: 'node',
+  clearMocks: true,
+  coverageDirectory: 'coverage',
+  testMatch: ['<rootDir>/src/tests/**/*.test.ts'],
+  // Puppeteer 23+ ships ESM-only entry points; babel-jest converts them and
+  // their ESM-only dependencies (puppeteer-core) to CommonJS so Jest can load them.
+  transform: {
+    '^.+\\.tsx?$': 'ts-jest',
+    'node_modules/(puppeteer|puppeteer-core|@puppeteer/browsers)/': [
+      'babel-jest',
+      { plugins: ['@babel/plugin-transform-modules-commonjs'] },
+    ],
+  },
+  transformIgnorePatterns: ['/node_modules/(?!puppeteer|puppeteer-core|@puppeteer/browsers/)'],
+};
