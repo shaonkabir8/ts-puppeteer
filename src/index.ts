@@ -1,29 +1,36 @@
 /*
  * @title ts-puppeteer 🚀
- * @desc 📝 A minimal boilerplate for Puppeteer and typescript.🚀
- * @version 1.0.0
+ * @desc A minimal demo automation script. Replace the navigation target
+ *       (TARGET_URL env var or the code below) with your own automation.
  * @author 🧑‍💻 Shaon Kabir <shaonkabir8>
  */
 
-// Let's scraping
-
+import 'dotenv/config';
 import debug from 'debug';
 import puppeteer from 'puppeteer';
-import options from '../lib/headerConfig';
+import browserOptions from '../lib/browserConfig';
 
 const print = debug('app:status');
 
-(async () => {
-	print('🎉 Launch new Browser and create new Tab');
-	const browser = await puppeteer.launch(options);
-	const [page] = await browser.pages();
+async function main(): Promise<void> {
+  print('🚀 Launching browser and creating a page');
+  const browser = await puppeteer.launch(browserOptions);
 
-	// Write your code here instead of Navigating into `google.com` 🚀
+  try {
+    const [page] = await browser.pages();
 
-	print('🚀 Navigate into Google.com');
-	await page.goto('https://google.com', { waitUntil: 'domcontentloaded'});
+    // Write your automation code here instead of visiting example.com 🚀
+    const targetUrl = process.env.TARGET_URL ?? 'https://example.com';
+    print(`🌐 Navigating to ${targetUrl}`);
+    await page.goto(targetUrl, { waitUntil: 'domcontentloaded' });
+    print(`☑️ Page title: ${await page.title()}`);
+  } finally {
+    print('🧹 Closing browser');
+    await browser.close();
+  }
+}
 
-	print('☑️ Broser Closed');
-	browser.close();
-
-})();
+main().catch((error) => {
+  print(`❌ ${error instanceof Error ? (error.stack ?? error.message) : error}`);
+  process.exitCode = 1;
+});

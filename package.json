@@ -1,73 +1,65 @@
 {
   "name": "ts-puppeteer",
   "version": "1.0.0",
-  "description": "A Minimal boilerplate for Puppeteer and typescript with jest setup",
+  "description": "A minimal project generator for Puppeteer and TypeScript with a Jest setup: yarn create ts-puppeteer my-project",
   "author": "Shaon Kabir <shaonkabir8>",
   "homepage": "https://github.com/shaonkabir8/ts-puppeteer#readme",
   "license": "MIT",
-  "private": false,
-  "dependencies": {
-    "debug": "^4.3.1",
-    "dotenv": "^8.2.0",
-    "puppeteer": "^1.18.1",
-    "typescript": "^3.5.3"
-  },
-  "devDependencies": {
-    "@types/debug": "^4.1.5",
-    "@types/jest": "^26.0.20",
-    "@types/node": "^10.14.13",
-    "@types/puppeteer": "^1.12.4",
-    "jest": "^26.6.3",
-    "jest-puppeteer": "^4.4.0",
-    "pre-commit": "^1.2.2",
-    "prettier": "^1.19.1",
-    "ts-jest": "^26.4.4",
-    "ts-node": "^7.0.1",
-    "tslint": "^5.18.0",
-    "tslint-config-prettier": "^1.18.0",
-    "tslint-plugin-prettier": "^2.0.1",
-    "eslint": "^6.7.2",
-    "husky": "^3.1.0",
-    "lint-staged": "^9.5.0"
-  },
   "keywords": [
     "typescript",
     "puppeteer",
     "jest",
     "boilerplate",
-    "ts-puppeteer",
-    "jest-puppeteer"
+    "generator",
+    "create",
+    "scaffold",
+    "ts-puppeteer"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "bin": {
+    "create-ts-puppeteer": "bin/create-ts-puppeteer.js"
+  },
+  "files": [
+    "bin",
+    "templates"
   ],
   "scripts": {
-    "start": "dotenv -e .env ts-node src/index.ts",
-    "lint": "tslint ./src/*.ts ./src/**/*.ts ./lib/**/*.ts",
-    "fix": "tslint --fix ./src/*.ts ./src/**/*.ts ./lib/**/*.ts",
-    "tests": "yarn run compile && jest",
-    "compile": "tsc"
+    "start": "ts-node src/index.ts",
+    "build": "tsc",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "scaffold": "node bin/create-ts-puppeteer.js"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
+  "dependencies": {
+    "debug": "^4.4.3",
+    "dotenv": "^18.0.0",
+    "puppeteer": "^25.17.0"
   },
-  "lint-staged": {
-    "*.{js,json,md}": [
-      "prettier --write",
-      "git add"
-    ],
-    "*.js": [
-      "eslint --fix",
-      "git add"
-    ],
-    "*.ts": [
-      "tslint --fix",
-      "git add"
-    ]
+  "devDependencies": {
+    "@babel/core": "^7.29.13",
+    "@babel/plugin-transform-modules-commonjs": "^7.29.14",
+    "@eslint/js": "^9.39.0",
+    "@types/debug": "^4.1.13",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^22.20.5",
+    "babel-jest": "^30.5.2",
+    "eslint": "^9.39.0",
+    "eslint-config-prettier": "^10.1.8",
+    "jest": "^30.5.0",
+    "prettier": "^3.6.2",
+    "ts-jest": "^29.4.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.46.0"
   },
-
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com:shaonkabir8/ts-puppeteer.git"
+    "url": "git+https://github.com/shaonkabir8/ts-puppeteer.git"
   },
   "bugs": {
     "url": "https://github.com/shaonkabir8/ts-puppeteer/issues"

@@ -1,16 +1,16 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
+    "target": "ES2022",
     "module": "CommonJS",
-    "strict": true,
-    "noImplicitAny": true,
-    "esModuleInterop": true,
     "moduleResolution": "node",
-    "declaration": true,
-    // Type Declaration Directory: auto generated while Compiling `ts` into `js`
-    "declarationDir": "",
-    // output directory: contains COMPILED JS Code
+    "lib": ["ES2022"],
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "sourceMap": true,
     "outDir": "dist"
   },
-  "include": ["./src/**/*"]
+  "include": ["src/**/*", "lib/**/*"],
+  "exclude": ["src/tests", "dist"]
 }
