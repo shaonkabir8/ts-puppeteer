@@ -32,5 +32,10 @@ jobs:
         run: npm run lint
       - name: Test
         run: npm test
+        env:
+          # GitHub runners (Ubuntu 23.10+) block unprivileged user namespaces
+          # via AppArmor, so Chrome's sandbox cannot start. This is the
+          # project's documented escape hatch (lib/browserConfig.ts):
+          PUPPETEER_CHROME_ARGS: --no-sandbox --disable-setuid-sandbox
       - name: Build
         run: npm run build
