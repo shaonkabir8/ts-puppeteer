@@ -30,11 +30,34 @@ function copyDir(srcDir, destDir) {
   }
 }
 
+/** Prints usage information for the generator CLI. */
+function printUsage() {
+  console.log(
+    [
+      'Usage:',
+      '  yarn create ts-puppeteer <projectName>',
+      '  npm create ts-puppeteer@latest <projectName>',
+      '  npx create-ts-puppeteer <projectName>',
+      '',
+      'Arguments:',
+      '  <projectName>  Lowercase npm-style name, optionally "@scope/name"',
+      '',
+      'Options:',
+      '  -h, --help     Show this help and exit',
+    ].join('\n'),
+  );
+}
+
 function main() {
   const projectName = process.argv[2];
 
+  if (projectName === '--help' || projectName === '-h') {
+    printUsage();
+    process.exit(0);
+  }
+
   if (!projectName) {
-    console.error('✖ Usage: yarn create ts-puppeteer <projectName>');
+    printUsage();
     process.exit(1);
   }
 

@@ -100,10 +100,31 @@ cp .env.example .env
 
 - **sandbox enabled** — no `--no-sandbox` unless you opt in via
   `PUPPETEER_CHROME_ARGS`;
-- **TLS verification enabled** — `ignoreHTTPSErrors: false`;
+- **TLS verification always on** — Puppeteer 23+ removed the
+  `ignoreHTTPSErrors` option; the browser verifies every certificate and
+  this project never bypasses that;
 - **no spoofed identity** — no hardcoded user agent;
 - **temporary profiles** — Puppeteer creates and cleans up a temporary
   profile per launch; set `PUPPETEER_PROFILE_DIR` to reuse a persistent one.
+
+## Development (this repository)
+
+Run the repo's own checks before opening a pull request:
+
+```bash
+npm install
+npm run lint     # ESLint 9 flat config
+npm test         # Jest: generator CLI + browser config + automation suite
+npm run build    # tsc -> dist/
+```
+
+| Test file                     | What it covers                                        |
+| ----------------------------- | ----------------------------------------------------- |
+| `src/tests/generator.test.ts` | `bin/create-ts-puppeteer.js`: scaffold, name rules, no-overwrite, `--help` |
+| `src/tests/browserConfig.test.ts` | Secure defaults and `PUPPETEER_*` env handling    |
+| `src/tests/index.test.ts`     | Real browser run against a local HTTP server          |
+
+See [CHANGELOG.md](CHANGELOG.md) for notable changes.
 
 ## Testing
 

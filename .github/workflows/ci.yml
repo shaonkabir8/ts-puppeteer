@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18, 20, 22]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Install Chrome shared libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 libxkbcommon0 \
+            libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 \
+            libpango-1.0-0 libcairo2 libasound2t64 libnss3 libnspr4 libatspi2.0-0
+      - name: Lint
+        run: npm run lint
+      - name: Test
+        run: npm test
+        env:
+          # GitHub runners (Ubuntu 23.10+) block unprivileged user namespaces
+          # via AppArmor, so Chrome's sandbox cannot start. This is the
+          # project's documented escape hatch (lib/browserConfig.ts):
+          PUPPETEER_CHROME_ARGS: --no-sandbox --disable-setuid-sandbox
+      - name: Build
+        run: npm run build

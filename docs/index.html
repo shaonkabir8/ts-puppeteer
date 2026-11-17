@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="en" class="light" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta
+    name="description"
+    content="ts-puppeteer scaffolds a ready-to-run Puppeteer + TypeScript + Jest project: secure browser defaults, ESLint, Prettier — one command."
+  >
+
+  <meta name="theme-color" content="#ffffff">
+
+  <title>ts-puppeteer — Puppeteer + TypeScript + Jest, one command</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  >
+
+  <style>
+    /* =========================================================
+       TS-PUPPETEER
+       Landing shell: sticky bar, centered hero, install box,
+       showcase grid, one-line footer.
+       Independent implementation — no framework, no build step.
+       ========================================================= */
+
+    :root {
+      color-scheme: light;
+
+      --bg: #ffffff;
+      --fg: #0a0a0a;
+      --muted: #f5f5f5;
+      --muted-fg: #737373;
+      --border: #e5e5e5;
+      --border-strong: #d4d4d4;
+      --card: #ffffff;
+      --code-bg: #fafafa;
+
+      --dark-card: #0a0a0a;
+      --dark-card-border: #232323;
+      --dark-card-fg: #fafafa;
+      --dark-card-muted: #a3a3a3;
+
+      --accent-fg: #131313;
+      --accent-contrast: #ffffff;
+      --pink: #ec4899;
+
+      --success: #16a34a;
+      --warning: #d97706;
+      --danger: #dc2626;
+
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+
+      --header-height: 56px;
+      --container: 1200px;
+      --hero-text: 672px;
+
+      --font:
+        "Inter",
+        ui-sans-serif,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+      --mono:
+        ui-monospace,
+        SFMono-Regular,
+        Menlo,
+        Monaco,
+        Consolas,
+        "Liberation Mono",
+        "Courier New",
+        monospace;
+
+      --transition: 180ms cubic-bezier(.2, .7, .2, 1);
+    }
+
+    html[data-theme="dark"] {
+      color-scheme: dark;
+
+      --bg: #0a0a0a;
+      --fg: #fafafa;
+      --muted: #171717;
+      --muted-fg: #a3a3a3;
+      --border: #262626;
+      --border-strong: #404040;
+      --card: #111111;
+      --code-bg: #1b1b1b;
+
+      --dark-card: #111111;
+      --dark-card-border: #2e2e2e;
+      --dark-card-fg: #fafafa;
+      --dark-card-muted: #a3a3a3;
+
+      --accent-fg: #fafafa;
+      --accent-contrast: #0a0a0a;
+    }
+
+    /* Reset */
+
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: calc(var(--header-height) + 24px);
+    }
+
+    body {
+      margin: 0;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font);
+      font-size: 16px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+
+    :focus-visible {
+      outline: 2px solid var(--fg);
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+
+    .visually-hidden {
+      position: absolute;
+      width: 1px; height: 1px;
+      margin: -1px; padding: 0;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .container {
+      width: 100%;
+      max-width: var(--container);
+      margin-inline: auto;
+      padding-inline: 24px;
+    }
+
+    /* -----------------------------------------
+       Header
+       ----------------------------------------- */
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      height: var(--header-height);
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-shell {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+
+    .brand-mark {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: var(--fg);
+      color: var(--bg);
+      font-family: var(--mono);
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .brand-sep {
+      color: var(--border-strong);
+      font-weight: 400;
+      user-select: none;
+    }
+
+    .desktop-nav {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .desktop-nav a {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--fg);
+      transition: background var(--transition), color var(--transition);
+    }
+
+    .desktop-nav a:hover { background: var(--muted); }
+
+    .nav-actions {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .star-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 32px;
+      padding: 0 10px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--fg);
+      transition: background var(--transition);
+    }
+
+    .star-badge:hover { background: var(--muted); }
+
+    .star-badge svg { width: 16px; height: 16px; }
+
+    .sponsor-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 32px;
+      padding: 0 10px;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--fg);
+      transition: background var(--transition);
+    }
+
+    .sponsor-link:hover { background: var(--muted); }
+    .sponsor-link svg { width: 16px; height: 16px; color: var(--pink); }
+
+    .theme-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      transition: background var(--transition);
+    }
+
+    .theme-toggle:hover { background: var(--muted); }
+
+    .theme-toggle svg {
+      width: 16px;
+      height: 16px;
+      color: var(--fg);
+    }
+
+    html[data-theme="light"] .theme-toggle .sun-icon { display: none; }
+    html[data-theme="dark"] .theme-toggle .moon-icon { display: none; }
+
+    .mobile-menu-toggle {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+    }
+
+    .mobile-menu-toggle:hover { background: var(--muted); }
+    .mobile-menu-toggle svg { width: 18px; height: 18px; color: var(--fg); }
+
+    .mobile-nav {
+      position: absolute;
+      top: var(--header-height);
+      left: 0;
+      right: 0;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      padding: 8px 24px 16px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .mobile-nav[hidden] { display: none; }
+
+    .mobile-nav a {
+      padding: 10px 4px;
+      font-size: 14px;
+      font-weight: 500;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .mobile-nav a:last-child { border-bottom: 0; }
+
+    /* -----------------------------------------
+       Hero
+       ----------------------------------------- */
+
+    .hero {
+      padding-top: 88px;
+      padding-bottom: 64px;
+    }
+
+    .hero-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      text-align: center;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--fg);
+      background: var(--bg);
+      transition: background var(--transition);
+    }
+
+    .hero-badge:hover { background: var(--muted); }
+    .hero-badge .badge-arrow { color: var(--muted-fg); }
+
+    .hero-title {
+      margin: 0;
+      max-width: 20ch;
+      font-size: clamp(40px, 7vw, 60px);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      background: linear-gradient(to bottom, var(--fg) 50%, color-mix(in oklab, var(--fg) 65%, transparent));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-wrap: balance;
+    }
+
+    .hero-description {
+      margin: 0;
+      max-width: var(--hero-text);
+      font-size: 20px;
+      line-height: 28px;
+      color: var(--muted-fg);
+      text-wrap: balance;
+    }
+
+    /* Install box */
+
+    .install-box {
+      width: min(576px, 100%);
+      border-radius: var(--radius-sm);
+      background: var(--code-bg);
+      overflow: hidden;
+      text-align: left;
+    }
+
+    .install-top {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 12px;
+      border-bottom: 1px solid color-mix(in oklab, var(--border) 55%, transparent);
+    }
+
+    .pkg-icon {
+      width: 16px;
+      height: 16px;
+      color: var(--muted-fg);
+      flex-shrink: 0;
+    }
+
+    .pkg-tab-group {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      min-width: 0;
+      overflow-x: auto;
+    }
+
+    .pkg-tab {
+      display: inline-flex;
+      align-items: center;
+      height: 28px;
+      padding: 0 8px;
+      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 500;
+      white-space: nowrap;
+      color: var(--fg);
+      transition: background var(--transition), border-color var(--transition);
+    }
+
+    .pkg-tab:hover { background: color-mix(in oklab, var(--border) 40%, transparent); }
+
+    .pkg-tab[aria-selected="true"] {
+      background: var(--bg);
+      border-color: var(--border);
+    }
+
+    .install-actions {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      flex-shrink: 0;
+    }
+
+    .install-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: var(--radius-sm);
+      color: var(--fg);
+      transition: background var(--transition);
+    }
+
+    .install-action:hover { background: color-mix(in oklab, var(--border) 40%, transparent); }
+
+    .install-action svg { width: 16px; height: 16px; color: var(--muted-fg); }
+
+    .install-action-labeled {
+      width: auto;
+      gap: 4px;
+      padding: 0 8px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .install-action-labeled svg { width: 14px; height: 14px; }
+
+    .install-action .check-icon { display: none; }
+    .install-action.copied .copy-icon { display: none; }
+    .install-action.copied .check-icon { display: block; color: var(--success); }
+
+    /* Copy outcome is never signalled by colour alone: a live region
+       carries the same information for assistive technology. */
+    .install-action.error .copy-icon { color: var(--danger); }
+
+    .install-command {
+      display: block;
+      padding: 14px 16px;
+      font-family: var(--mono);
+      font-size: 14px;
+      line-height: 20px;
+      color: var(--muted-fg);
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .install-command .dollar { color: var(--muted-fg); user-select: none; }
+    .install-command .cmd-dim { color: var(--muted-fg); }
+    .install-command .cmd-pkg { color: var(--muted-fg); }
+
+    /* Hero actions */
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      height: 36px;
+      padding: 0 16px;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 500;
+      transition: background var(--transition), border-color var(--transition), opacity var(--transition);
+    }
+
+    .button-primary {
+      background: var(--accent-fg);
+      color: var(--accent-contrast);
+    }
+
+    .button-primary:hover { opacity: 0.88; }
+
+    .button-secondary {
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--fg);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+
+    .button-secondary:hover { background: var(--muted); }
+
+    .agent-copy {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 28px;
+      padding: 0 10px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted-fg);
+      transition: color var(--transition), background var(--transition);
+    }
+
+    .agent-copy:hover { color: var(--fg); background: var(--muted); }
+    .agent-copy svg { width: 12px; height: 12px; }
+
+    /* -----------------------------------------
+       Showcase grid
+       ----------------------------------------- */
+
+    .showcase {
+      padding-bottom: 80px;
+    }
+
+    .showcase-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+
+    .showcase-card {
+      position: relative;
+      min-height: 300px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--dark-card-border);
+      background:
+        radial-gradient(120% 90% at 50% 0%, rgba(124, 58, 237, 0.14), transparent 60%),
+        var(--dark-card);
+      color: var(--dark-card-fg);
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .showcase-card .card-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: auto;
+      align-self: center;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--dark-card-muted);
+    }
+
+    .showcase-card .card-chip::before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+      background: var(--pink);
+    }
+
+    .showcase-card .card-tag {
+      align-self: center;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      color: var(--dark-card-muted);
+      margin-bottom: 16px;
+    }
+
+    .showcase-card .card-tag::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--pink);
+    }
+
+    .showcase-card h2 {
+      margin: 0;
+      font-size: 30px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      text-align: center;
+      text-wrap: balance;
+    }
+
+    .showcase-card p {
+      margin: 12px 0 0;
+      font-size: 14px;
+      line-height: 20px;
+      color: var(--dark-card-muted);
+      text-align: center;
+      max-width: 46ch;
+      margin-inline: auto;
+    }
+
+    /* Quote card */
+
+    .card-quote-mark {
+      font-family: var(--mono);
+      font-size: 40px;
+      font-weight: 700;
+      line-height: 1;
+      color: var(--pink);
+      margin-bottom: 12px;
+    }
+
+    .card-quote h2 { text-align: left; }
+    .card-quote .quote-attribution {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .quote-avatar {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.1);
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--dark-card-muted);
+    }
+
+    .quote-name { font-size: 13px; font-weight: 600; }
+    .quote-sub { font-size: 12px; color: var(--dark-card-muted); }
+
+    /* Command card */
+
+    .card-command h2 { text-align: left; }
+
+    .card-command .command-line {
+      margin-top: 20px;
+      padding: 12px 14px;
+      border: 1px solid var(--dark-card-border);
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.04);
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 20px;
+      color: var(--dark-card-fg);
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    .card-command .command-line .dollar { color: var(--dark-card-muted); user-select: none; }
+
+    .card-command .card-chip { align-self: flex-end; margin-top: auto; }
+
+    /* Report mockup card */
+
+    .card-report { padding: 24px; }
+
+    .card-report h2 { font-size: 24px; }
+
+    .report-mock {
+      margin-top: 20px;
+      border: 1px solid var(--dark-card-border);
+      border-radius: var(--radius-md);
+      background: #050505;
+      padding: 14px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--dark-card-muted);
+    }
+
+    .report-mock .report-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--dark-card-border);
+    }
+
+    .report-mock .report-title { color: var(--dark-card-fg); }
+
+    .report-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .report-status::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: currentColor;
+    }
+
+    .report-status.pass { color: var(--success); background: rgba(22, 163, 74, 0.12); }
+    .report-status.difference { color: var(--danger); background: rgba(220, 38, 38, 0.12); }
+
+    .report-mock .report-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding-top: 10px;
+    }
+
+    .report-mock .report-row strong { color: var(--dark-card-fg); font-weight: 500; }
+
+    .report-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+      height: 64px;
+      margin-top: 14px;
+    }
+
+    .report-bars span {
+      flex: 1;
+      border-radius: 4px 4px 0 0;
+      background: rgba(255, 255, 255, 0.14);
+    }
+
+    .report-bars span.mismatch { background: var(--pink); }
+
+    .report-note {
+      margin-top: 12px;
+      font-family: var(--font);
+      font-size: 11px;
+      color: var(--dark-card-muted);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* -----------------------------------------
+       Footer
+       ----------------------------------------- */
+
+    .site-footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 0;
+    }
+
+    .footer-line {
+      margin: 0;
+      text-align: center;
+      font-size: 14px;
+      color: var(--muted-fg);
+    }
+
+    .footer-line a {
+      color: var(--fg);
+      font-weight: 500;
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    /* -----------------------------------------
+       Responsive
+       ----------------------------------------- */
+
+    @media (max-width: 900px) {
+      .showcase-grid { grid-template-columns: 1fr; }
+      .showcase-card { min-height: 260px; }
+    }
+
+    @media (max-width: 767px) {
+      .desktop-nav { display: none; }
+      .mobile-menu-toggle { display: inline-flex; }
+
+      .hero { padding-top: 56px; padding-bottom: 48px; }
+      .hero-title { font-size: clamp(34px, 9vw, 44px); }
+      .hero-description { font-size: 17px; line-height: 26px; }
+
+      .install-actions .install-action span { display: none; }
+
+      .showcase { padding-bottom: 56px; }
+      .showcase-card { padding: 24px; }
+      .showcase-card h2 { font-size: 24px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      * { transition: none !important; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <a class="visually-hidden" href="#main">Skip to content</a>
+
+  <header class="site-header" id="top">
+
+    <div class="container nav-shell">
+
+      <a class="brand" href="#top" aria-label="ts-puppeteer home">
+        <span class="brand-mark" aria-hidden="true">T.</span>
+        <span>ts-puppeteer</span>
+      </a>
+
+      <nav class="desktop-nav" aria-label="Main">
+        <a href="https://github.com/shaonkabir8/ts-puppeteer#readme">Docs</a>
+        <a href="https://github.com/shaonkabir8/ts-puppeteer#create-a-project">Create a project</a>
+        <a href="https://github.com/shaonkabir8/ts-puppeteer#scripts-in-every-created-project">Scripts</a>
+        <a href="https://github.com/shaonkabir8/ts-puppeteer#configuration">Configuration</a>
+      </nav>
+
+      <div class="nav-actions">
+
+        <a
+          class="star-badge"
+          href="https://github.com/shaonkabir8/ts-puppeteer"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="ts-puppeteer on GitHub"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/>
+            <path d="M9 18c-4.51 2-5-2-7-2"/>
+          </svg>
+          <span aria-hidden="true">★</span>
+        </a>
+
+        <a
+          class="sponsor-link"
+          href="https://github.com/sponsors/shaonkabir8"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+          </svg>
+          Sponsor
+        </a>
+
+        <button
+          class="theme-toggle"
+          id="themeToggle"
+          type="button"
+          aria-label="Switch to dark mode"
+          title="Toggle appearance"
+        >
+          <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/>
+          </svg>
+
+          <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+          </svg>
+        </button>
+
+        <button
+          class="mobile-menu-toggle"
+          id="menuToggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="mobileNav"
+          aria-label="Open navigation"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <path d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+
+      </div>
+
+    </div>
+
+    <nav class="mobile-nav" id="mobileNav" aria-label="Mobile navigation" hidden>
+      <a href="https://github.com/shaonkabir8/ts-puppeteer#readme">Docs</a>
+      <a href="https://github.com/shaonkabir8/ts-puppeteer#create-a-project">Create a project</a>
+      <a href="https://github.com/shaonkabir8/ts-puppeteer#scripts-in-every-created-project">Scripts</a>
+      <a href="https://github.com/shaonkabir8/ts-puppeteer#configuration">Configuration</a>
+      <a href="https://github.com/sponsors/shaonkabir8">Sponsor</a>
+    </nav>
+
+  </header>
+
+
+  <main id="main">
+
+    <!-- Hero -->
+    <section class="hero">
+
+      <div class="container hero-inner">
+
+        <a class="hero-badge" href="https://github.com/shaonkabir8/ts-puppeteer">
+          v1.0.0 — open source on GitHub
+          <span class="badge-arrow" aria-hidden="true">→</span>
+        </a>
+
+        <h1 class="hero-title">Scaffold once.<br>Automate anywhere.</h1>
+
+        <p class="hero-description">
+          A minimal project generator for Puppeteer and TypeScript with a
+          Jest setup. Secure browser defaults, wired up for you.
+        </p>
+
+        <div class="install-box">
+
+          <div class="install-top">
+
+            <svg class="pkg-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M0 0v7.5h7.5V0zm8.25 0v7.5h7.498V0zm8.25 0v7.5H24V0zM8.25 8.25v7.5h7.498v-7.5zm8.25 0v7.5H24v-7.5zM0 16.5V24h7.5v-7.5zm8.25 0V24h7.498v-7.5zm8.25 0V24H24v-7.5z"/>
+            </svg>
+
+            <div class="pkg-tab-group" role="tablist" aria-label="Install method">
+
+              <button class="pkg-tab" id="tab-npx" role="tab" aria-selected="true" aria-controls="install-command" data-cmd="npx github:shaonkabir8/ts-puppeteer my-project">npx</button>
+
+              <button class="pkg-tab" id="tab-npm" role="tab" aria-selected="false" aria-controls="install-command" data-cmd="npm create ts-puppeteer@latest my-project">npm</button>
+
+              <button class="pkg-tab" id="tab-yarn" role="tab" aria-selected="false" aria-controls="install-command" data-cmd="yarn create ts-puppeteer my-project">yarn</button>
+
+              <button class="pkg-tab" id="tab-pnpm" role="tab" aria-selected="false" aria-controls="install-command" data-cmd="pnpm create ts-puppeteer my-project">pnpm</button>
+
+            </div>
+
+            <div class="install-actions">
+
+              <a
+                class="install-action install-action-labeled"
+                href="https://github.com/shaonkabir8/ts-puppeteer"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="View ts-puppeteer on GitHub"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M5 12h14M12 5v14"/>
+                </svg>
+                <span>npm</span>
+              </a>
+
+              <button
+                class="install-action"
+                id="copyInstall"
+                type="button"
+                aria-label="Copy install command"
+              >
+                <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                  <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                </svg>
+                <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M20 6 9 17l-5-5"/>
+                </svg>
+              </button>
+
+            </div>
+
+            <span class="visually-hidden" id="copyStatus" role="status" aria-live="polite"></span>
+
+          </div>
+
+          <code class="install-command" id="install-command" role="tabpanel" aria-labelledby="tab-npx"><span class="dollar" aria-hidden="true">$ </span><span class="cmd-dim">npx github:shaonkabir8/ts-puppeteer </span><span class="cmd-pkg">my-project</span></code>
+
+        </div>
+
+        <div class="hero-actions">
+
+          <a class="button button-primary" href="https://github.com/shaonkabir8/ts-puppeteer#create-a-project">
+            Get Started
+          </a>
+
+          <a class="button button-secondary" href="https://github.com/shaonkabir8/ts-puppeteer#scripts-in-every-created-project">
+            Browse the scripts
+          </a>
+
+        </div>
+
+        <button class="agent-copy" id="agentCopy" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+            <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+          </svg>
+          <span data-agent-label>Copy prompt for your agent</span>
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- Showcase -->
+    <section class="showcase" aria-label="ts-puppeteer at a glance">
+
+      <div class="container showcase-grid">
+
+        <article class="showcase-card">
+
+          <span class="card-tag">SCAFFOLD</span>
+
+          <h2>One command.<br>A whole project.</h2>
+
+          <p>
+            Puppeteer, TypeScript, Jest, ESLint and Prettier — scaffolded
+            with secure browser defaults, so you start from a working baseline.
+          </p>
+
+          <span class="card-chip">ts-puppeteer</span>
+
+        </article>
+
+        <article class="showcase-card card-quote">
+
+          <span class="card-quote-mark" aria-hidden="true">«</span>
+
+          <h2>Sandbox on.<br>Certificates verified.</h2>
+
+          <div class="quote-attribution">
+
+            <span class="quote-avatar" aria-hidden="true">SK</span>
+
+            <span>
+              <span class="quote-name">Shaon Kabir</span><br>
+              <span class="quote-sub">Author, ts-puppeteer</span>
+            </span>
+
+          </div>
+
+        </article>
+
+        <article class="showcase-card card-command">
+
+          <h2>Scaffold in one command</h2>
+
+          <div class="command-line"><span class="dollar" aria-hidden="true">$ </span>npx github:shaonkabir8/ts-puppeteer my-project</div>
+
+          <p>
+            Prints ready next steps — install, start, test, build — and the
+            demo automation runs a real headless browser.
+          </p>
+
+          <span class="card-chip">ts-puppeteer</span>
+
+        </article>
+
+        <article class="showcase-card card-report">
+
+          <h2>Tests against a local server</h2>
+
+          <div class="report-mock" role="img" aria-label="Mock-up of a ts-puppeteer test run showing a passing suite">
+
+            <div class="report-bar">
+              <span class="report-title">my-app npm test</span>
+              <span class="report-status pass">PASS</span>
+            </div>
+
+            <div class="report-row">
+              <span>suites</span>
+              <strong>3 passed of 3 total</strong>
+            </div>
+
+            <div class="report-row">
+              <span>tests</span>
+              <strong>12 passed, 12 total</strong>
+            </div>
+
+            <div class="report-bars" aria-hidden="true">
+              <span></span><span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span>
+            </div>
+
+          </div>
+
+          <div class="report-note">
+            <span>Illustrative layout</span>
+            <span>Runs offline — no third-party sites</span>
+          </div>
+
+        </article>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <footer class="site-footer">
+
+    <div class="container">
+
+      <p class="footer-line">
+        Built by <a href="https://github.com/shaonkabir8" target="_blank" rel="noopener noreferrer">Shaon Kabir</a>.
+        The source code is available on <a href="https://github.com/shaonkabir8/ts-puppeteer" target="_blank" rel="noopener noreferrer">GitHub</a>.
+      </p>
+
+    </div>
+
+  </footer>
+
+
+  <script>
+    (function () {
+      'use strict';
+
+      var root = document.documentElement;
+
+      /* Theme */
+
+      var themeToggle = document.getElementById('themeToggle');
+
+      function applyTheme(theme) {
+        root.setAttribute('data-theme', theme);
+        root.classList.toggle('dark', theme === 'dark');
+        root.classList.toggle('light', theme === 'light');
+        themeToggle.setAttribute(
+          'aria-label',
+          theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'
+        );
+      }
+
+      var stored = null;
+      try { stored = localStorage.getItem('ts-puppeteer-theme'); } catch (error) { /* unavailable */ }
+
+      applyTheme(stored === 'dark' ? 'dark' : 'light');
+
+      themeToggle.addEventListener('click', function () {
+        var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        applyTheme(next);
+        try { localStorage.setItem('ts-puppeteer-theme', next); } catch (error) { /* unavailable */ }
+      });
+
+      /* Mobile navigation */
+
+      var menuToggle = document.getElementById('menuToggle');
+      var mobileNav = document.getElementById('mobileNav');
+
+      menuToggle.addEventListener('click', function () {
+        var open = !mobileNav.hidden;
+        mobileNav.hidden = open;
+        menuToggle.setAttribute('aria-expanded', String(!open));
+        menuToggle.setAttribute('aria-label', open ? 'Open navigation' : 'Close navigation');
+      });
+
+      mobileNav.addEventListener('click', function (event) {
+        if (event.target.closest('a')) {
+          mobileNav.hidden = true;
+          menuToggle.setAttribute('aria-expanded', 'false');
+        }
+      });
+
+      /* Clipboard helpers
+         Feedback is only ever shown once the outcome of the write is
+         known. A rejected async write falls back to the legacy path,
+         whose boolean return value is also checked. */
+
+      function legacyCopy(text) {
+        var area = document.createElement('textarea');
+        area.value = text;
+        area.setAttribute('readonly', '');
+        area.style.position = 'fixed';
+        area.style.top = '-9999px';
+        document.body.appendChild(area);
+
+        var copied = false;
+        try {
+          area.select();
+          copied = document.execCommand('copy');
+        } catch (error) {
+          copied = false;
+        }
+
+        document.body.removeChild(area);
+        return copied;
+      }
+
+      function copyText(text) {
+        return new Promise(function (resolve) {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(
+              function () { resolve(true); },
+              function () { resolve(legacyCopy(text)); }
+            );
+            return;
+          }
+          resolve(legacyCopy(text));
+        });
+      }
+
+      /* Install tabs + copy */
+
+      var tabs = Array.prototype.slice.call(document.querySelectorAll('.pkg-tab'));
+      var commandEl = document.getElementById('install-command');
+      var copyButton = document.getElementById('copyInstall');
+      var copyStatus = document.getElementById('copyStatus');
+      var agentCopy = document.getElementById('agentCopy');
+      var copyResetTimer = null;
+
+      var AGENT_PROMPT =
+        'Scaffold a Puppeteer + TypeScript + Jest project for me with ' +
+        'ts-puppeteer. Run it with: ' +
+        'npx github:shaonkabir8/ts-puppeteer my-project. ' +
+        'Docs: https://github.com/shaonkabir8/ts-puppeteer#readme';
+
+      function renderCommand(command) {
+        commandEl.innerHTML = '';
+
+        var dollar = document.createElement('span');
+        dollar.className = 'dollar';
+        dollar.setAttribute('aria-hidden', 'true');
+        dollar.textContent = '$ ';
+
+        /* Split at the final space so the package name keeps the
+           .cmd-pkg treatment it has in the authored markup. */
+        var splitAt = command.lastIndexOf(' ');
+        var prefix = splitAt === -1 ? command : command.slice(0, splitAt + 1);
+        var pkg = splitAt === -1 ? '' : command.slice(splitAt + 1);
+
+        var dim = document.createElement('span');
+        dim.className = 'cmd-dim';
+        dim.textContent = prefix;
+
+        commandEl.appendChild(dollar);
+        commandEl.appendChild(dim);
+
+        if (pkg) {
+          var pkgEl = document.createElement('span');
+          pkgEl.className = 'cmd-pkg';
+          pkgEl.textContent = pkg;
+          commandEl.appendChild(pkgEl);
+        }
+      }
+
+      function flashCopyState(copied) {
+        copyButton.classList.remove('copied', 'error');
+        copyButton.classList.add(copied ? 'copied' : 'error');
+
+        copyStatus.textContent = copied
+          ? 'Install command copied to clipboard'
+          : 'Copy failed. Select the command and copy it manually.';
+
+        window.clearTimeout(copyResetTimer);
+        copyResetTimer = window.setTimeout(function () {
+          copyButton.classList.remove('copied', 'error');
+          copyStatus.textContent = '';
+        }, 1600);
+      }
+
+      tabs.forEach(function (tab) {
+        tab.addEventListener('click', function () {
+          tabs.forEach(function (other) {
+            other.setAttribute('aria-selected', String(other === tab));
+          });
+          commandEl.setAttribute('aria-labelledby', tab.id);
+          renderCommand(tab.getAttribute('data-cmd'));
+        });
+      });
+
+      copyButton.addEventListener('click', function () {
+        var active = tabs.filter(function (tab) {
+          return tab.getAttribute('aria-selected') === 'true';
+        })[0];
+        var command = active ? active.getAttribute('data-cmd') : '';
+
+        if (!command) { return; }
+
+        copyText(command).then(flashCopyState);
+      });
+
+      var agentLabel = agentCopy.querySelector('[data-agent-label]');
+
+      agentCopy.addEventListener('click', function () {
+        copyText(AGENT_PROMPT).then(function (copied) {
+          agentLabel.textContent = copied ? 'Copied' : 'Copy failed';
+          window.setTimeout(function () {
+            agentLabel.textContent = 'Copy prompt for your agent';
+          }, 1600);
+        });
+      });
+    }());
+  </script>
+
+</body>
+</html>
